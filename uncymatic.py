@@ -1,15 +1,10 @@
 from pathlib import Path
 import sys
 
+import replace_file_names
+
 CYMATICS_PREFIX = "Cymatics - "
 
-
-def uncymatic(path: Path) -> None:
-    if CYMATICS_PREFIX in str(path):
-        try:
-            path.rename(str(path).replace(CYMATICS_PREFIX, ""))
-        except IOError as e:
-            print(e)
 
 def main():
     if len(sys.argv) != 2:
@@ -23,19 +18,10 @@ def main():
         print("Please enter an absolute path.")
         return
     
-    next_dirs = [abs_path]
-    while next_dirs:
-        path = next_dirs[-1]
-        next_dirs.pop()
-        dirs = []
-        uncymatic(path)
-        if path.is_dir():
-            for sub_dir in path.iterdir():
-                if sub_dir.is_file():
-                    next_dirs.append(sub_dir)
-                else:
-                    dirs.append(sub_dir)
-        next_dirs.extend(dirs)
+    dirs_replaced, files_replaced = replace_file_names.replace_file_names(abs_path, CYMATICS_PREFIX, "")
+    
+    print(f"Directory names replaced: {dirs_replaced}")
+    print(f"File names replaced: {files_replaced}")
 
 
 if __name__ == "__main__":
